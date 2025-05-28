@@ -76,15 +76,15 @@ export default function RootLayout() {
           />
         </Stack>
         <StatusBar style="auto" />
-        <WebView
-          source={{ html: keitaroScript }}
-          style={{ width: 0, height: 0 }}
-          scrollEnabled={false}
-          onError={(syntheticEvent) => {
-            const { nativeEvent } = syntheticEvent;
-            console.warn('WebView error: ', nativeEvent);
-          }}
-        />
+        {/*<WebView*/}
+        {/*  source={{ html: keitaroScript }}*/}
+        {/*  style={{ width: 0, height: 0 }}*/}
+        {/*  scrollEnabled={false}*/}
+        {/*  onError={(syntheticEvent) => {*/}
+        {/*    const { nativeEvent } = syntheticEvent;*/}
+        {/*    console.warn('WebView error: ', nativeEvent);*/}
+        {/*  }}*/}
+        {/*/>*/}
       </View>
     </ThemeProvider>
   );

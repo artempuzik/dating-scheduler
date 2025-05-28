@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import { DatingItem } from '../types/dating';
-import { getDatingItems, saveDatingItems } from '../utils/storage';
+import { DatingItem } from '@/types/dating';
+import { getDatingItems, saveDatingItems } from '@/utils/storage';
 import { differenceInYears, parseISO } from 'date-fns';
 
 export default function DatingListScreen() {
@@ -39,27 +39,41 @@ export default function DatingListScreen() {
     return differenceInYears(new Date(), parseISO(birthday));
   };
 
-  const renderDatingItem = ({ item }: { item: DatingItem }) => (
-    <View style={styles.itemContainer}>
-      {item.photo && (
-        <Image source={{ uri: item.photo }} style={styles.photo} />
-      )}
-      <View style={styles.itemDetails}>
-        <Text style={styles.partnerName}>{item.partnerName}</Text>
-        <Text>Date: {item.date}</Text>
-        <Text>Time: {item.time}</Text>
-        <Text>Age: {calculateAge(item.birthday)} years</Text>
-      </View>
-      <View style={styles.actions}>
-        <TouchableOpacity onPress={() => handleEditDating(item)}>
-          <Text style={styles.editButton}>Edit</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleDeleteDating(item.id)}>
-          <Text style={styles.deleteButton}>Delete</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+  const renderDatingItem = ({ item }: { item: DatingItem }) => {
+    const itemDateTime = new Date(`${item.date}T${item.time}`);
+    const isPast = itemDateTime < new Date();
+
+    return (
+        <View style={[styles.itemContainer, isPast && styles.pastItem]}>
+          {item.photo && (
+              <Image source={{ uri: item.photo }} style={styles.photo} />
+          )}
+          <View style={styles.itemDetails}>
+            <Text style={styles.partnerName}>{item.partnerName}</Text>
+            <Text>Dating Date: {item.date}</Text>
+            <Text>Dating Time: {item.time}</Text>
+            <Text>Birthday: {item.birthday}</Text>
+            <Text>Age: {calculateAge(item.birthday)} years</Text>
+          </View>
+          <View style={styles.actions}>
+            {!isPast &&<TouchableOpacity
+                onPress={() => handleEditDating(item)}
+                disabled={isPast}
+            >
+              <Text
+                  style={styles.editButton}
+              >
+                Edit
+              </Text>
+            </TouchableOpacity>}
+            <TouchableOpacity onPress={() => handleDeleteDating(item.id)}>
+              <Text style={styles.deleteButton}>Delete</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+    );
+  };
+
 
   return (
     <View style={styles.container}>
@@ -140,4 +154,7 @@ const styles = StyleSheet.create({
   deleteButton: {
     color: '#FF3B30',
   },
+  pastItem: {
+    opacity: 0.5,
+  }
 }); 

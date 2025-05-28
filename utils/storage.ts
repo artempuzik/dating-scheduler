@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { DatingItem, UserData } from '../types/dating';
+import { DatingItem, UserData } from '@/types/dating';
 
 const DATING_ITEMS_KEY = '@dating_items';
 const USER_DATA_KEY = '@user_data';

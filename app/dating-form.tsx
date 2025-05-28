@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Platform } from 'react-native';
+import React, { useState } from 'react';
+import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Platform, Alert} from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { DatingItem } from '../types/dating';
-import { getDatingItems, saveDatingItems } from '../utils/storage';
-import { scheduleNotification } from '../utils/notifications';
+import { DatingItem } from '@/types/dating';
+import { getDatingItems, saveDatingItems } from '@/utils/storage';
+import { scheduleNotification } from '@/utils/notifications';
 import { format } from 'date-fns';
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default function DatingFormScreen() {
   const router = useRouter();
@@ -15,7 +15,7 @@ export default function DatingFormScreen() {
 
   const [partnerName, setPartnerName] = useState(editingItem?.partnerName || '');
   const [date, setDate] = useState(editingItem?.date ? new Date(editingItem.date) : new Date());
-  const [time, setTime] = useState(editingItem?.time ? new Date(`2000-01-01T${editingItem.time}`) : new Date());
+  const [time, setTime] = useState(new Date());
   const [birthday, setBirthday] = useState(editingItem?.birthday ? new Date(editingItem.birthday) : new Date());
   const [photo, setPhoto] = useState(editingItem?.photo || '');
 
@@ -34,6 +34,18 @@ export default function DatingFormScreen() {
     if (!result.canceled) {
       setPhoto(result.assets[0].uri);
     }
+  };
+
+  const toggleDatePicker = () => {
+    setShowDatePicker(prev => !prev);
+  };
+
+  const toggleTimePicker = () => {
+    setShowTimePicker(prev => !prev);
+  };
+
+  const toggleBirthdayPicker = () => {
+    setShowBirthdayPicker(prev => !prev);
   };
 
   const handleDateChange = (event: any, selectedDate?: Date) => {
@@ -71,7 +83,6 @@ export default function DatingFormScreen() {
       birthday: format(birthday, 'yyyy-MM-dd'),
       photo,
     };
-
     let updatedItems;
     if (editingItem) {
       updatedItems = items.map(item => 
@@ -80,10 +91,14 @@ export default function DatingFormScreen() {
     } else {
       updatedItems = [...items, newItem];
     }
-
-    await saveDatingItems(updatedItems);
-    await scheduleNotification(newItem);
-    router.back();
+    try {
+      await scheduleNotification(newItem);
+      await saveDatingItems(updatedItems);
+      router.push('/dating-list');
+    } catch (error) {
+      console.error('Error saving dating items:', error);
+      Alert.alert('Error', 'Failed to schedule notification. Invalid date/time format.');
+    }
   };
 
   return (
@@ -105,54 +120,56 @@ export default function DatingFormScreen() {
         onChangeText={setPartnerName}
       />
 
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.dateButton}
-        onPress={() => setShowDatePicker(true)}
+        onPress={toggleDatePicker}
       >
         <Text style={styles.dateButtonText}>
           Date: {format(date, 'yyyy-MM-dd')}
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity 
+      {(showDatePicker) && (
+          <DateTimePicker
+              value={date}
+              mode="date"
+              minimumDate={new Date()}
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              onChange={handleDateChange}
+              style={Platform.OS === 'ios' ? styles.iosPicker : undefined}
+          />
+      )}
+
+      <TouchableOpacity
         style={styles.dateButton}
-        onPress={() => setShowTimePicker(true)}
+        onPress={toggleTimePicker}
       >
         <Text style={styles.dateButtonText}>
           Time: {format(time, 'HH:mm')}
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity 
+      {(showTimePicker) && (
+          <DateTimePicker
+              value={time}
+              mode="time"
+              minimumDate={new Date()}
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              onChange={handleTimeChange}
+              style={Platform.OS === 'ios' ? styles.iosPicker : undefined}
+          />
+      )}
+
+      <TouchableOpacity
         style={styles.dateButton}
-        onPress={() => setShowBirthdayPicker(true)}
+        onPress={toggleBirthdayPicker}
       >
         <Text style={styles.dateButtonText}>
           Birthday: {format(birthday, 'yyyy-MM-dd')}
         </Text>
       </TouchableOpacity>
 
-      {(showDatePicker || Platform.OS === 'ios') && (
-        <DateTimePicker
-          value={date}
-          mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          onChange={handleDateChange}
-          style={Platform.OS === 'ios' ? styles.iosPicker : undefined}
-        />
-      )}
-
-      {(showTimePicker || Platform.OS === 'ios') && (
-        <DateTimePicker
-          value={time}
-          mode="time"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          onChange={handleTimeChange}
-          style={Platform.OS === 'ios' ? styles.iosPicker : undefined}
-        />
-      )}
-
-      {(showBirthdayPicker || Platform.OS === 'ios') && (
+      {(showBirthdayPicker) && (
         <DateTimePicker
           value={birthday}
           mode="date"
