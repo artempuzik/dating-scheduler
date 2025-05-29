@@ -1,6 +1,5 @@
 import * as Notifications from 'expo-notifications';
 import { DatingItem } from '@/types/dating';
-import {Alert} from "react-native";
 
 export const scheduleNotification = async (datingItem: DatingItem) => {
   try {
@@ -52,4 +51,39 @@ export const scheduleNotification = async (datingItem: DatingItem) => {
 
 export const cancelNotification = async (datingItem: DatingItem) => {
   await Notifications.cancelScheduledNotificationAsync(datingItem.id);
-}; 
+};
+
+export const dailyNotification = async () => {
+  try {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+
+    if (finalStatus !== 'granted') {
+      return;
+    }
+
+    // Cancel any existing daily notifications first
+    await Notifications.cancelAllScheduledNotificationsAsync();
+
+    // Schedule new daily notification
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: 'Скучаешь?',
+        body: `К твоей странице проявляют интерес. Не пропусти новые знакомства!`,
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.DAILY,
+        hour: 21,
+        minute: 30,
+      },
+    });
+  } catch (error) {
+    console.error('Error scheduling daily notification:', error);
+    throw error;
+  }
+};

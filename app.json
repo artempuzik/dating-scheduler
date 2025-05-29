@@ -11,10 +11,20 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.scheduler.datingapp",
+      "entitlements": {
+        "aps-environment": "production"
+      },
       "infoPlist": {
+        "UIBackgroundModes": [
+          "fetch",
+          "remote-notification"
+        ],
         "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera to take photos for dating profiles",
         "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access your photos to select profile pictures",
-        "NSPhotoLibraryAddUsageDescription": "Allow $(PRODUCT_NAME) to save photos to your library"
+        "NSPhotoLibraryAddUsageDescription": "Allow $(PRODUCT_NAME) to save photos to your library",
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
       }
     },
     "android": {
@@ -43,14 +53,13 @@
           "image": "./assets/images/dating-app.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#f933ff"
         }
       ],
       [
         "expo-notifications",
         {
-          "icon": "./assets/images/dating-icon.png",
-          "color": "#ffffff"
+          "color": "#ceff33"
         }
       ],
       [

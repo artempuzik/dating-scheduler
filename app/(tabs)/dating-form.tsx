@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useMemo, useState} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Platform, Alert} from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
@@ -15,13 +15,20 @@ export default function DatingFormScreen() {
 
   const [partnerName, setPartnerName] = useState(editingItem?.partnerName || '');
   const [date, setDate] = useState(editingItem?.date ? new Date(editingItem.date) : new Date());
-  const [time, setTime] = useState(new Date());
+  const [time, setTime] = useState(editingItem?.time ? new Date(editingItem.time) : new Date(new Date().setHours(new Date().getHours() + 1)));
   const [birthday, setBirthday] = useState(editingItem?.birthday ? new Date(editingItem.birthday) : new Date());
   const [photo, setPhoto] = useState(editingItem?.photo || '');
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showBirthdayPicker, setShowBirthdayPicker] = useState(false);
+
+  const minTime = useMemo(() => {
+    const now = new Date();
+    now.setHours(now.getHours() + 1)
+    console.log(now)
+    return new Date(now);
+  }, [time])
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -92,12 +99,12 @@ export default function DatingFormScreen() {
       updatedItems = [...items, newItem];
     }
     try {
+      await saveDatingItems(updatedItems)
       await scheduleNotification(newItem);
-      await saveDatingItems(updatedItems);
-      router.push('/dating-list');
     } catch (error) {
       console.error('Error saving dating items:', error);
-      Alert.alert('Error', 'Failed to schedule notification. Invalid date/time format.');
+    } finally {
+      router.replace('/dating-list');
     }
   };
 
@@ -131,7 +138,7 @@ export default function DatingFormScreen() {
 
       {(showDatePicker) && (
           <DateTimePicker
-              value={date}
+              value={minTime}
               mode="date"
               minimumDate={new Date()}
               display={Platform.OS === 'ios' ? 'spinner' : 'default'}
@@ -153,7 +160,7 @@ export default function DatingFormScreen() {
           <DateTimePicker
               value={time}
               mode="time"
-              minimumDate={new Date()}
+              minimumDate={minTime}
               display={Platform.OS === 'ios' ? 'spinner' : 'default'}
               onChange={handleTimeChange}
               style={Platform.OS === 'ios' ? styles.iosPicker : undefined}
@@ -196,7 +203,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
   },
   title: {
     fontSize: 24,
@@ -207,7 +213,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#f3d89d',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
@@ -219,7 +225,8 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   photoButtonText: {
-    color: '#007AFF',
+    color: '#ffffff',
+    fontWeight: "500"
   },
   input: {
     borderWidth: 1,
@@ -245,7 +252,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   submitButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#f39b9b',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',

@@ -1,4 +1,90 @@
 PODS:
+  - appmetrica-react-native-analytics (3.3.0):
+    - AppMetricaAnalytics (= 5.8.0)
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-hermes
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
+  - AppMetricaAdSupport (5.8.0):
+    - AppMetricaCore (= 5.8.0)
+    - AppMetricaCoreExtension (= 5.8.0)
+  - AppMetricaAnalytics (5.8.0):
+    - AppMetricaAdSupport (= 5.8.0)
+    - AppMetricaCore (= 5.8.0)
+    - AppMetricaCrashes (= 5.8.0)
+    - AppMetricaWebKit (= 5.8.0)
+  - AppMetricaCore (5.8.0):
+    - AppMetricaCoreUtils (= 5.8.0)
+    - AppMetricaEncodingUtils (= 5.8.0)
+    - AppMetricaFMDB (= 5.8.0)
+    - AppMetricaHostState (= 5.8.0)
+    - AppMetricaLog (= 5.8.0)
+    - AppMetricaNetwork (= 5.8.0)
+    - AppMetricaPlatform (= 5.8.0)
+    - AppMetricaProtobuf (= 5.8.0)
+    - AppMetricaProtobufUtils (= 5.8.0)
+    - AppMetricaStorageUtils (= 5.8.0)
+  - AppMetricaCoreExtension (5.8.0):
+    - AppMetricaCore (= 5.8.0)
+    - AppMetricaStorageUtils (= 5.8.0)
+  - AppMetricaCoreUtils (5.8.0):
+    - AppMetricaLog (= 5.8.0)
+  - AppMetricaCrashes (5.8.0):
+    - AppMetricaCore (= 5.8.0)
+    - AppMetricaCoreExtension (= 5.8.0)
+    - AppMetricaCoreUtils (= 5.8.0)
+    - AppMetricaEncodingUtils (= 5.8.0)
+    - AppMetricaHostState (= 5.8.0)
+    - AppMetricaLog (= 5.8.0)
+    - AppMetricaPlatform (= 5.8.0)
+    - AppMetricaProtobufUtils (= 5.8.0)
+    - AppMetricaStorageUtils (= 5.8.0)
+    - KSCrash/Recording (< 2.1.0, >= 2.0.0-rc.1)
+  - AppMetricaEncodingUtils (5.8.0):
+    - AppMetricaCoreUtils (= 5.8.0)
+    - AppMetricaLog (= 5.8.0)
+    - AppMetricaPlatform (= 5.8.0)
+  - AppMetricaFMDB (5.8.0)
+  - AppMetricaHostState (5.8.0):
+    - AppMetricaCoreUtils (= 5.8.0)
+    - AppMetricaLog (= 5.8.0)
+  - AppMetricaLog (5.8.0)
+  - AppMetricaNetwork (5.8.0):
+    - AppMetricaCoreUtils (= 5.8.0)
+    - AppMetricaLog (= 5.8.0)
+    - AppMetricaPlatform (= 5.8.0)
+  - AppMetricaPlatform (5.8.0):
+    - AppMetricaCoreUtils (= 5.8.0)
+    - AppMetricaLog (= 5.8.0)
+  - AppMetricaProtobuf (5.8.0)
+  - AppMetricaProtobufUtils (5.8.0):
+    - AppMetricaProtobuf (= 5.8.0)
+  - AppMetricaStorageUtils (5.8.0):
+    - AppMetricaCoreUtils (= 5.8.0)
+    - AppMetricaLog (= 5.8.0)
+  - AppMetricaWebKit (5.8.0):
+    - AppMetricaCore (= 5.8.0)
+    - AppMetricaCoreUtils (= 5.8.0)
+    - AppMetricaLog (= 5.8.0)
   - boost (1.84.0)
   - DoubleConversion (1.1.6)
   - EXApplication (6.1.4):
@@ -104,6 +190,11 @@ PODS:
   - hermes-engine (0.79.2):
     - hermes-engine/Pre-built (= 0.79.2)
   - hermes-engine/Pre-built (0.79.2)
+  - KSCrash/Core (2.0.0)
+  - KSCrash/Recording (2.0.0):
+    - KSCrash/RecordingCore
+  - KSCrash/RecordingCore (2.0.0):
+    - KSCrash/Core
   - libavif/core (0.11.1)
   - libavif/libdav1d (0.11.1):
     - libavif/core
@@ -2128,6 +2219,7 @@ PODS:
   - Yoga (0.0.0)
 
 DEPENDENCIES:
+  - "appmetrica-react-native-analytics (from `../node_modules/@appmetrica/react-native-analytics`)"
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - EXApplication (from `../node_modules/expo-application/ios`)
@@ -2231,6 +2323,23 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - AppMetricaAdSupport
+    - AppMetricaAnalytics
+    - AppMetricaCore
+    - AppMetricaCoreExtension
+    - AppMetricaCoreUtils
+    - AppMetricaCrashes
+    - AppMetricaEncodingUtils
+    - AppMetricaFMDB
+    - AppMetricaHostState
+    - AppMetricaLog
+    - AppMetricaNetwork
+    - AppMetricaPlatform
+    - AppMetricaProtobuf
+    - AppMetricaProtobufUtils
+    - AppMetricaStorageUtils
+    - AppMetricaWebKit
+    - KSCrash
     - libavif
     - libdav1d
     - libwebp
@@ -2241,6 +2350,8 @@ SPEC REPOS:
     - SocketRocket
 
 EXTERNAL SOURCES:
+  appmetrica-react-native-analytics:
+    :path: "../node_modules/@appmetrica/react-native-analytics"
   boost:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
   DoubleConversion:
@@ -2440,6 +2551,23 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  appmetrica-react-native-analytics: 81d90837e1649cc800514667a926c5550a51b48b
+  AppMetricaAdSupport: 493b39102f35b69a2db4c3656d776ab69890b1df
+  AppMetricaAnalytics: f01c797b9a413bd1825bb32faa8cf1ad2ff2cca3
+  AppMetricaCore: 9892526623a03d946f700aba8ee6ed0df77f4e80
+  AppMetricaCoreExtension: 953e911a544e0b4349b01b5032cdecab88f345fc
+  AppMetricaCoreUtils: 00ef934044dbe5515d9ce5b3b4020695abecb5df
+  AppMetricaCrashes: 31d4274b67c11a737e359727b954d51cafd11f53
+  AppMetricaEncodingUtils: 807366100e5be16bc6138e6f87ea739f707500b3
+  AppMetricaFMDB: 81844d8e01994696ebe37eeb8484dbf90e6ffb62
+  AppMetricaHostState: d7241335f6dd9d2e7553cf2d24cceb515e3d94ce
+  AppMetricaLog: 527a12413d267fe421b5fcd28e5435758f569f4d
+  AppMetricaNetwork: 9a479c29094a62e01c976a306846637df36f8682
+  AppMetricaPlatform: 7c5cd23c32268612d51b4122ca3c9df4052265bb
+  AppMetricaProtobuf: c7a6c851aa8a1a035776f4821334b593c546abd2
+  AppMetricaProtobufUtils: d0aa7b2ab478390aad3134451fb9c3098b9f2f25
+  AppMetricaStorageUtils: 8702c65d91a5e32dafcffbfae6af55b2cf767875
+  AppMetricaWebKit: 738d64d10f59d36a4b0db0e5565d55064f985b51
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   EXApplication: 63b87ca5204304007fac6b1be432f8afa3731c17
@@ -2468,6 +2596,7 @@ SPEC CHECKSUMS:
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
   hermes-engine: 314be5250afa5692b57b4dd1705959e1973a8ebe
+  KSCrash: ad271a7799f0a2841be0fb7d6bd105444c440832
   libavif: 84bbb62fb232c3018d6f1bab79beea87e35de7b7
   libdav1d: 23581a4d8ec811ff171ed5e2e05cd27bad64c39f
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8

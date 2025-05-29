@@ -1,12 +1,16 @@
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
-import { useEffect } from 'react';
+import {useEffect, useState} from 'react';
 import * as Notifications from 'expo-notifications';
-import { WebView } from 'react-native-webview';
-import { View } from 'react-native';
+import LandingScreen from "@/app/landing";
+
+export const theme = {
+    dark: false,
+    colors: DefaultTheme.colors,
+    fonts: DefaultTheme.fonts,
+};
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -23,6 +27,8 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
+  const [isAccepted, setIsAccepted] = useState(true);
+
   useEffect(() => {
     const requestPermissions = async () => {
       const { status } = await Notifications.requestPermissionsAsync();
@@ -35,57 +41,23 @@ export default function RootLayout() {
   }, []);
 
   if (!loaded) {
-    // Async font loading only occurs in development.
     return null;
   }
 
-  const keitaroScript = `
-    <script>
-      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-      })(window,document,'script','dataLayer','GTM-XXXXXXX');
-    </script>
-  `;
+  if (isAccepted) {
+    return (
+        <ThemeProvider value={DefaultTheme}>
+          <LandingScreen setIsAccepted={setIsAccepted}/>
+        </ThemeProvider>
+    );
+  }
 
   return (
-    <ThemeProvider value={DefaultTheme}>
-      <View style={{ flex: 1 }}>
+      <ThemeProvider value={theme}>
         <Stack>
-          <Stack.Screen
-            name="index"
-            options={{
-              title: 'Welcome',
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="dating-list"
-            options={{
-              title: 'Dating List',
-              headerShown: true,
-            }}
-          />
-          <Stack.Screen
-            name="dating-form"
-            options={{
-              title: 'Add/Edit Date',
-              headerShown: true,
-            }}
-          />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="index" options={{ headerShown: false }} />
         </Stack>
-        <StatusBar style="auto" />
-        {/*<WebView*/}
-        {/*  source={{ html: keitaroScript }}*/}
-        {/*  style={{ width: 0, height: 0 }}*/}
-        {/*  scrollEnabled={false}*/}
-        {/*  onError={(syntheticEvent) => {*/}
-        {/*    const { nativeEvent } = syntheticEvent;*/}
-        {/*    console.warn('WebView error: ', nativeEvent);*/}
-        {/*  }}*/}
-        {/*/>*/}
-      </View>
     </ThemeProvider>
   );
 }
