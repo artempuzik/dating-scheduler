@@ -35,6 +35,16 @@ export default function DatingFormScreen() {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showBirthdayPicker, setShowBirthdayPicker] = useState(false);
 
+  const resetForm = () => {
+    setPartnerName('');
+    setPhoneNumber('');
+    setEmail('');
+    setDate(new Date());
+    setTime(new Date());
+    setBirthday(new Date());
+    setPhoto('');
+  };
+
   const minTime = useMemo(() => {
     const now = new Date();
     now.setHours(now.getHours() + 1)
@@ -117,6 +127,7 @@ export default function DatingFormScreen() {
     } catch (error) {
       console.error('Error saving dating items:', error);
     } finally {
+      resetForm()
       router.replace('/dating-list');
     }
   };
