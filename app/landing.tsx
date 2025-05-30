@@ -9,40 +9,40 @@ interface Props {
     setIsAccepted: (isAccepted: boolean) => void;
 }
 
+const METRICA_API_KEY = 'fa026b7c-3462-419e-8e57-8c08493289f4';
+
 const LandingScreen = ({ setIsAccepted }: Props) => {
     const [url, setUrl] = useState<string>('');
     const webViewRef = useRef<WebView | null>(null)
 
     const codeAddListener = useMemo(() => {
         return `
-            setTimeout(() => {
                 const init = async () => {
-                   console.log("Listener injected");
-                   let fileInputs = null;
+                   window.ReactNativeWebView.postMessage(JSON.stringify({ log_action: 'Listener injected'}));
+                 
                    window.addEventListener("message", function (event) {
                         window.ReactNativeWebView.postMessage(JSON.stringify(event.data));
                    });
                    document.addEventListener("click", function (event) {
-                       console.log("Document clicked");
+                       const fileInputs = document.querySelectorAll('.edit-profile__photo input[type="file"]');
                        if(fileInputs?.length) {
                            fileInputs.forEach((fileInput) => {
                                const fn = () => {
                                    window.ReactNativeWebView.postMessage(JSON.stringify({ action: 'upload_photo'}));
+                                   removeEventListener("change", fn);
                                }
                                fileInput.addEventListener("change", fn);
                            });
-                       } else {
-                           fileInputs = document.querySelectorAll('.edit-profile__photo input[type="file"]');
                        }
                    });
                 };
                 init();
-            }, 2000);
     `;
     }, []);
 
-    const addMetricaAction = (action: string) => async () => {
+    const addMetricaAction = (action: string) => {
         try {
+            console.log('METRICA_ACTION: ', action)
             AppMetrica.reportEvent(action);
         } catch (e) {
             console.log(e)
@@ -51,7 +51,7 @@ const LandingScreen = ({ setIsAccepted }: Props) => {
 
     useEffect(() => {
         AppMetrica.activate({
-            apiKey: '',
+            apiKey: METRICA_API_KEY,
             sessionTimeout: 120,
             firstActivationAsUpdate: false,
             locationTracking: true,
@@ -86,13 +86,14 @@ const LandingScreen = ({ setIsAccepted }: Props) => {
     return (
         <WebView
             bounces={false}
-            ref={(ref) => (webViewRef.current = ref)}
+            ref={webViewRef}
             style={styles.container}
             source={{ uri: url }}
             scalesPageToFit={(Platform.OS !== 'ios')}
             onNavigationStateChange={(data) => {
                 try {
                     saveLastUrl(data.url)
+                    dailyNotification()
                 } catch (e) {
                     console.error('onNavigationStateChange error:', e);
                 }
@@ -100,7 +101,6 @@ const LandingScreen = ({ setIsAccepted }: Props) => {
             onMessage={ (event) => {
                 try {
                     if(event.nativeEvent?.data) {
-                        dailyNotification()
                         const data = JSON.parse(event.nativeEvent?.data)
                         if(data && data?.action === 'upload_photo') {
                             addMetricaAction('upload_photo')

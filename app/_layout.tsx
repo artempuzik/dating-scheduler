@@ -1,10 +1,11 @@
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import 'react-native-reanimated';
 import {useEffect, useState} from 'react';
 import * as Notifications from 'expo-notifications';
 import LandingScreen from "@/app/landing";
+import * as Linking from 'expo-linking';
 
 export const theme = {
     dark: false,
@@ -26,7 +27,7 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
-
+  const router = useRouter();
   const [isAccepted, setIsAccepted] = useState(true);
 
   useEffect(() => {
@@ -38,6 +39,18 @@ export default function RootLayout() {
     };
 
     requestPermissions();
+
+    // Handle notification response
+    const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+      const url = response.notification.request.content.data?.url;
+      if (url && typeof url === 'string') {
+        Linking.openURL(url);
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   if (!loaded) {

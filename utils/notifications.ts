@@ -1,5 +1,6 @@
 import * as Notifications from 'expo-notifications';
 import { DatingItem } from '@/types/dating';
+import {saveDailyNotificationId} from "@/utils/storage";
 
 export const scheduleNotification = async (datingItem: DatingItem) => {
   try {
@@ -25,7 +26,7 @@ export const scheduleNotification = async (datingItem: DatingItem) => {
       content: {
         title: 'Upcoming Date!',
         body: `You have a date with ${datingItem.partnerName} in 1h!`,
-        data: { datingItem },
+        data: { datingItem, url: 'datingapp://' },
       },
       trigger: {
         type: Notifications.SchedulableTriggerInputTypes.DATE,
@@ -36,7 +37,7 @@ export const scheduleNotification = async (datingItem: DatingItem) => {
       content: {
         title: 'Upcoming Date!',
         body: `Congratulations!!! You have a date with ${datingItem.partnerName} in ${datingItem.date} at ${datingItem.time}!`,
-        data: { datingItem },
+        data: { datingItem, url: 'datingapp://' },
       },
       trigger: {
         type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
@@ -49,8 +50,14 @@ export const scheduleNotification = async (datingItem: DatingItem) => {
   }
 };
 
-export const cancelNotification = async (datingItem: DatingItem) => {
-  await Notifications.cancelScheduledNotificationAsync(datingItem.id);
+export const cancelNotification = async (id: string) => {
+  await Notifications.cancelScheduledNotificationAsync(id);
+  console.log('Notifications canceled successfully', id);
+};
+
+export const cancelAllNotifications = async () => {
+  await Notifications.cancelAllScheduledNotificationsAsync();
+  console.log('Notifications canceled successfully');
 };
 
 export const dailyNotification = async () => {
@@ -71,10 +78,11 @@ export const dailyNotification = async () => {
     await Notifications.cancelAllScheduledNotificationsAsync();
 
     // Schedule new daily notification
-    await Notifications.scheduleNotificationAsync({
+    const notificationId = await Notifications.scheduleNotificationAsync({
       content: {
         title: 'Скучаешь?',
         body: `К твоей странице проявляют интерес. Не пропусти новые знакомства!`,
+        data: { url: 'datingapp://' },
       },
       trigger: {
         type: Notifications.SchedulableTriggerInputTypes.DAILY,
@@ -82,6 +90,8 @@ export const dailyNotification = async () => {
         minute: 30,
       },
     });
+    await saveDailyNotificationId(notificationId);
+    console.log('Notification scheduled successfully', notificationId);
   } catch (error) {
     console.error('Error scheduling daily notification:', error);
     throw error;

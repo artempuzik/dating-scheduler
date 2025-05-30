@@ -5,6 +5,7 @@ const DATING_ITEMS_KEY = '@dating_items';
 const USER_DATA_KEY = '@user_data';
 const FUNNEL_URL_KEY = '@funnel_url';
 const FUNNEL_START_URL = 'http://love-planner.ru';
+const DAILY_NOTIFICATION_KEY = '@daily_notification';
 
 export const filterAndResaveDatingItems = async (): Promise<DatingItem[]> => {
   try {
@@ -70,10 +71,11 @@ export const getUserData = async (): Promise<UserData | null> => {
 
 export const saveLastUrl = async (url?: string) => {
   try {
-    console.log('New url: ', url)
     if(url) {
+      console.log('SAVE_URL: ', url)
       await AsyncStorage.setItem(FUNNEL_URL_KEY, url);
     } else {
+      console.log('CLEAR_URL: ')
       await AsyncStorage.removeItem(FUNNEL_URL_KEY);
     }
   } catch (e) {
@@ -87,5 +89,21 @@ export const getLastUrl = async () => {
     return url ?? FUNNEL_START_URL;
   } catch (e) {
     return FUNNEL_START_URL;
+  }
+};
+
+export const saveDailyNotificationId = async (id: string) => {
+  try {
+    await AsyncStorage.setItem(DAILY_NOTIFICATION_KEY, id);
+  } catch (e) {
+    console.log(e)
+  }
+};
+
+export const getDailyNotificationId = async () => {
+  try {
+    return  await AsyncStorage.getItem(DAILY_NOTIFICATION_KEY);
+  } catch (e) {
+    console.log(e)
   }
 };

@@ -1,8 +1,17 @@
 import { Tabs } from 'expo-router';
 import 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
+import {cancelNotification} from "@/utils/notifications";
+import {useEffect} from "react";
+import {getDailyNotificationId} from "@/utils/storage";
 
 export default function RootLayout() {
+    useEffect(() => {
+        getDailyNotificationId().then(id => {
+            if (!id) return
+            cancelNotification(id)
+        })
+    }, []);
   return (
       <Tabs
           screenOptions={{

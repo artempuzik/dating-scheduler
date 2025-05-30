@@ -1,6 +1,7 @@
 import React, {useState, useCallback} from 'react';
-import {View, Text, StyleSheet, FlatList, TouchableOpacity, Image} from 'react-native';
+import {View, Text, StyleSheet, FlatList, TouchableOpacity, Image, Platform} from 'react-native';
 import {useFocusEffect, useRouter} from 'expo-router';
+import * as Linking from "expo-linking";
 import {DatingItem} from '@/types/dating';
 import {getDatingItems, saveDatingItems} from '@/utils/storage';
 import {differenceInYears, parseISO} from 'date-fns';
@@ -16,6 +17,30 @@ export default function DatingListScreen() {
             loadDatingItems();
         }, [])
     )
+
+    const onCallMobilePhone = async (phoneNumber?: string) => {
+
+        if(!phoneNumber) {
+            return;
+        }
+        try {
+            await Linking.openURL(`tel:${phoneNumber}`);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const onTypedEmail = async (email?: string) => {
+
+        if(!email) {
+            return;
+        }
+        try {
+        await Linking.openURL(`mailto:${email}`)
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const loadDatingItems = async () => {
         const items = await getDatingItems();
@@ -37,13 +62,6 @@ export default function DatingListScreen() {
         const updatedItems = datingItems.filter(item => item.id !== id);
         await saveDatingItems(updatedItems);
         setDatingItems(updatedItems);
-    };
-
-    const handleViewCompatibility = (item: DatingItem) => {
-        router.push({
-            pathname: '/compatibility',
-            params: {item: JSON.stringify(item)}
-        });
     };
 
     const calculateAge = (birthday: string) => {
@@ -69,6 +87,24 @@ export default function DatingListScreen() {
                         <Text style={styles.zodiacSymbol}>{zodiacSymbols[zodiacSign]}</Text>
                         <Text style={styles.zodiacText}>{zodiacSign}</Text>
                     </View>
+                    <View style={styles.zodiacContainer}>
+                        {
+                            item.email && (
+                                <TouchableOpacity onPress={() => onTypedEmail(item.email)}>
+                                    <Text style={styles.phoneNumber}>{item.email}</Text>
+                                </TouchableOpacity>
+                            )
+                        }
+                    </View>
+                    <View style={styles.zodiacContainer}>
+                        {
+                            item.phoneNumber && (
+                                <TouchableOpacity onPress={() => onCallMobilePhone(item.phoneNumber)}>
+                                    <Text style={styles.phoneNumber}>{item.phoneNumber}</Text>
+                                </TouchableOpacity>
+                            )
+                        }
+                    </View>
                 </View>
                 <View style={styles.actions}>
                     {!isPast && (
@@ -79,9 +115,6 @@ export default function DatingListScreen() {
                             <Text style={styles.editButton}>Edit</Text>
                         </TouchableOpacity>
                     )}
-                    <TouchableOpacity onPress={() => handleViewCompatibility(item)}>
-                        <Text style={styles.compatibilityButton}>Info</Text>
-                    </TouchableOpacity>
                     <TouchableOpacity onPress={() => handleDeleteDating(item.id)}>
                         <Text style={styles.deleteButton}>Delete</Text>
                     </TouchableOpacity>
@@ -178,6 +211,11 @@ const styles = StyleSheet.create({
     zodiacSymbol: {
         fontSize: 20,
         marginRight: 5,
+    },
+    phoneNumber: {
+        fontSize: 16,
+        color: '#007AFF',
+        textDecorationLine: 'underline',
     },
     zodiacText: {
         fontSize: 16,

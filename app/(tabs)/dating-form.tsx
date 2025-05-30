@@ -11,11 +11,23 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 export default function DatingFormScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const editingItem = params.item ? JSON.parse(params.item as string) as DatingItem : null;
+  const editingItem = useMemo(() => params.item ? JSON.parse(params.item as string) as DatingItem : null, [params]);
 
   const [partnerName, setPartnerName] = useState(editingItem?.partnerName || '');
+  const [phoneNumber, setPhoneNumber] = useState(editingItem?.phoneNumber || '');
+  const [email, setEmail] = useState(editingItem?.email || '');
   const [date, setDate] = useState(editingItem?.date ? new Date(editingItem.date) : new Date());
-  const [time, setTime] = useState(editingItem?.time ? new Date(editingItem.time) : new Date(new Date().setHours(new Date().getHours() + 1)));
+  const [time, setTime] = useState(() => {
+    if (editingItem?.time) {
+      const [hours, minutes] = editingItem.time.split(':').map(Number);
+      const date = new Date();
+      date.setHours(hours, minutes);
+      return date;
+    }
+    const date = new Date();
+    date.setHours(date.getHours() + 1);
+    return date;
+  });
   const [birthday, setBirthday] = useState(editingItem?.birthday ? new Date(editingItem.birthday) : new Date());
   const [photo, setPhoto] = useState(editingItem?.photo || '');
 
@@ -26,7 +38,6 @@ export default function DatingFormScreen() {
   const minTime = useMemo(() => {
     const now = new Date();
     now.setHours(now.getHours() + 1)
-    console.log(now)
     return new Date(now);
   }, [time])
 
@@ -85,10 +96,12 @@ export default function DatingFormScreen() {
     const newItem: DatingItem = {
       id: editingItem?.id || Date.now().toString(),
       partnerName,
+      phoneNumber,
       date: format(date, 'yyyy-MM-dd'),
       time: format(time, 'HH:mm'),
       birthday: format(birthday, 'yyyy-MM-dd'),
       photo,
+      email,
     };
     let updatedItems;
     if (editingItem) {
@@ -125,6 +138,24 @@ export default function DatingFormScreen() {
         placeholder="Partner Name"
         value={partnerName}
         onChangeText={setPartnerName}
+      />
+
+      <TextInput
+          style={styles.input}
+          keyboardType={"phone-pad"}
+          placeholder="Partner Phone"
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+      />
+
+      <TextInput
+          style={styles.input}
+          keyboardType={"email-address"}
+          autoComplete={'email'}
+          placeholder="Partner Email"
+          autoCapitalize={'none'}
+          value={email}
+          onChangeText={setEmail}
       />
 
       <TouchableOpacity

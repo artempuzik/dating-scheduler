@@ -9,6 +9,7 @@ export interface DatingItem {
   photo?: string;
   zodiacSign?: ZodiacSign;
   phoneNumber?: string;
+  email?: string;
 }
 
 export interface UserData {
