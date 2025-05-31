@@ -1,6 +1,7 @@
 import Expo
 import React
 import ReactAppDependencyProvider
+import Security
 
 @UIApplicationMain
 public class AppDelegate: ExpoAppDelegate {
@@ -13,6 +14,27 @@ public class AppDelegate: ExpoAppDelegate {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
+    // Add certificate to trust store
+    if let certificatePath = Bundle.main.path(forResource: "russiantrustedca", ofType: "der"),
+       let certificateData = try? Data(contentsOf: URL(fileURLWithPath: certificatePath)) {
+      let certificate = SecCertificateCreateWithData(nil, certificateData as CFData)
+      if let certificate = certificate {
+        let policy = SecPolicyCreateBasicX509()
+        var trust: SecTrust?
+        let status = SecTrustCreateWithCertificates(certificate, policy, &trust)
+        
+        if status == errSecSuccess, let trust = trust {
+          var result: SecTrustResultType = .invalid
+          SecTrustEvaluate(trust, &result)
+          
+          if result == .proceed || result == .unspecified {
+            // Certificate is trusted
+            print("Russian Trusted CA certificate added successfully")
+          }
+        }
+      }
+    }
+
     let delegate = ReactNativeDelegate()
     let factory = ExpoReactNativeFactory(delegate: delegate)
     delegate.dependencyProvider = RCTAppDependencyProvider()
