@@ -38,9 +38,9 @@ export default function RootLayout() {
               }}
           />
           <Tabs.Screen
-              name="compatibility"
+              name="tips"
               options={{
-                  title: 'Compatibility',
+                  title: 'Tips',
                   tabBarIcon: ({ color, size }) => (
                       <Ionicons name="heart" size={size} color={color} />
                   ),

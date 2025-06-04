@@ -1,9 +1,53 @@
 import React, {useCallback, useMemo} from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
-import {DatingItem, UserData} from '@/types/dating';
+import {UserData} from '@/types/dating';
 import {getZodiacSign, zodiacSymbols, compatibilityDescriptions, ZodiacSign} from '@/types/zodiac';
 import {getUserData} from '@/utils/storage';
 import {useFocusEffect, useRouter} from "expo-router";
+
+    const relationship_tips = [
+    {
+        "title": "Communicate Openly and Honestly",
+        "description": "Share your thoughts and feelings honestly, and listen actively. Good communication builds trust and understanding."
+    },
+    {
+        "title": "Spend Quality Time Together",
+        "description": "Be present and engage meaningfully. Quality time strengthens emotional bonds and creates lasting memories."
+    },
+    {
+        "title": "Practice Empathy",
+        "description": "Try to understand the other person's feelings and perspective. Empathy deepens emotional connection."
+    },
+    {
+        "title": "Show Respect",
+        "description": "Respect each other’s opinions, boundaries, and space. It maintains harmony and dignity in the relationship."
+    },
+    {
+        "title": "Offer Support and Encouragement",
+        "description": "Be there in good times and bad. Your support shows you care and are committed to the relationship."
+    },
+    {
+        "title": "Learn to Compromise",
+        "description": "Work together to find middle ground. Compromise shows maturity and willingness to prioritize the relationship."
+    },
+    {
+        "title": "Forgive and Let Go of Grudges",
+        "description": "Don’t let past mistakes ruin the present. Forgiveness helps the relationship heal and grow."
+    },
+    {
+        "title": "Celebrate Together",
+        "description": "Mark achievements and joyful moments. Shared celebrations build positivity and connection."
+    },
+    {
+        "title": "Find and Nurture Shared Interests",
+        "description": "Engage in hobbies or activities you both enjoy. It brings joy and strengthens your bond."
+    },
+    {
+        "title": "Be Consistent and Reliable",
+        "description": "Follow through on promises and be dependable. Consistency builds trust and emotional security."
+    }
+]
+
 
 export default function CompatibilityScreen() {
     const [userData, setUserData] = React.useState<UserData | null>(null);
@@ -23,8 +67,6 @@ export default function CompatibilityScreen() {
     }, []);
     const userSign = useMemo(() => getZodiacSign(userData?.birthday ?? ''), [userData]);
 
-    const compatibilityArray = useMemo(() => Object.entries(compatibilityDescriptions[userSign as ZodiacSign]), [userSign]);
-
     if (!userData) {
         return (
             <View style={styles.container}>
@@ -36,16 +78,13 @@ export default function CompatibilityScreen() {
     return (
         <ScrollView style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.signSymbol}>{zodiacSymbols[userSign as ZodiacSign]}</Text>
-                <Text style={[styles.title, {marginHorizontal: 5},]}>{userSign}</Text>
-                <Text style={styles.title}>Compatibility</Text>
+                <Text style={[styles.title, {marginHorizontal: 5},]}>{userData.name}, Do you want to make your relationship with your partner stronger? Then follow these tips:</Text>
             </View>
             {
-                compatibilityArray.map((item, index) => (
+                relationship_tips.map((item, index) => (
                     <View style={styles.signBox} key={index}>
-                        <Text style={styles.signSymbol}>{zodiacSymbols[item[0] as ZodiacSign]}</Text>
-                        <Text style={styles.signName}>{item[0]}</Text>
-                        <Text style={styles.label}>{item[1]}</Text>
+                        <Text style={styles.title}>{item.title}</Text>
+                        <Text style={styles.label}>{item.description}</Text>
                     </View>
                 ))
             }

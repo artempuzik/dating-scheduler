@@ -76,6 +76,7 @@ export default function NameScreen() {
                     value={birthday || new Date()}
                     mode="date"
                     display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                    textColor="#000"
                     onChange={handleDateChange}
                     maximumDate={new Date()}
                 />

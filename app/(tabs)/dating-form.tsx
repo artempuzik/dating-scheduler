@@ -1,5 +1,5 @@
 import React, {useMemo, useState} from 'react';
-import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Platform, Alert} from 'react-native';
+import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Platform, Alert, ScrollView} from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { DatingItem } from '@/types/dating';
@@ -133,7 +133,7 @@ export default function DatingFormScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>{editingItem ? 'Edit Date' : 'Add New Date'}</Text>
       
       <TouchableOpacity style={styles.photoButton} onPress={pickImage}>
@@ -147,6 +147,7 @@ export default function DatingFormScreen() {
       <TextInput
         style={styles.input}
         placeholder="Partner Name"
+        placeholderTextColor="#000"
         value={partnerName}
         onChangeText={setPartnerName}
       />
@@ -155,6 +156,7 @@ export default function DatingFormScreen() {
           style={styles.input}
           keyboardType={"phone-pad"}
           placeholder="Partner Phone"
+          placeholderTextColor="#000"
           value={phoneNumber}
           onChangeText={setPhoneNumber}
       />
@@ -165,6 +167,7 @@ export default function DatingFormScreen() {
           autoComplete={'email'}
           placeholder="Partner Email"
           autoCapitalize={'none'}
+          placeholderTextColor="#000"
           value={email}
           onChangeText={setEmail}
       />
@@ -183,6 +186,7 @@ export default function DatingFormScreen() {
               value={minTime}
               mode="date"
               minimumDate={new Date()}
+              textColor="#000"
               display={Platform.OS === 'ios' ? 'spinner' : 'default'}
               onChange={handleDateChange}
               style={Platform.OS === 'ios' ? styles.iosPicker : undefined}
@@ -204,6 +208,7 @@ export default function DatingFormScreen() {
               mode="time"
               minimumDate={minTime}
               display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              textColor="#000"
               onChange={handleTimeChange}
               style={Platform.OS === 'ios' ? styles.iosPicker : undefined}
           />
@@ -223,6 +228,7 @@ export default function DatingFormScreen() {
           value={birthday}
           mode="date"
           display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+          textColor="#000"
           onChange={handleBirthdayChange}
           style={Platform.OS === 'ios' ? styles.iosPicker : undefined}
         />
@@ -237,7 +243,7 @@ export default function DatingFormScreen() {
           {editingItem ? 'Save Changes' : 'Add Date'}
         </Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
 
