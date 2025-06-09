@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import {View, TextInput, StyleSheet, Text, TouchableOpacity, Platform, Image} from 'react-native';
 import {useRouter} from 'expo-router';
 import {saveUserData, getUserData} from '@/utils/storage';
-import {getZodiacSign, zodiacSymbols} from '@/types/zodiac';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function NameScreen() {
@@ -27,7 +26,6 @@ export default function NameScreen() {
             await saveUserData({
                 name: name.trim(),
                 birthday: birthday.toISOString().split('T')[0],
-                zodiacSign: getZodiacSign(birthday.toISOString().split('T')[0])
             });
             router.replace('/dating-list');
         }
@@ -39,8 +37,6 @@ export default function NameScreen() {
             setBirthday(selectedDate);
         }
     };
-
-    const zodiacSign = birthday ? getZodiacSign(birthday.toISOString().split('T')[0]) : null;
 
     return (
         <View style={styles.container}>
@@ -63,13 +59,6 @@ export default function NameScreen() {
                     {birthday ? birthday.toLocaleDateString() : 'Select your birthday'}
                 </Text>
             </TouchableOpacity>
-
-            {zodiacSign && (
-                <View style={styles.zodiacContainer}>
-                    <Text style={styles.zodiacSymbol}>{zodiacSymbols[zodiacSign]}</Text>
-                    <Text style={styles.zodiacText}>{zodiacSign}</Text>
-                </View>
-            )}
 
             {showDatePicker && (
                 <DateTimePicker

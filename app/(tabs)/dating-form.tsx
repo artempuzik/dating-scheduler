@@ -15,6 +15,8 @@ export default function DatingFormScreen() {
 
   const [partnerName, setPartnerName] = useState(editingItem?.partnerName || '');
   const [phoneNumber, setPhoneNumber] = useState(editingItem?.phoneNumber || '');
+  const [partnerDescription, setPartnerDescription] = useState(editingItem?.description || '');
+  const [partnerRating, setPartnerRating] = useState(editingItem?.rating ?? 0);
   const [email, setEmail] = useState(editingItem?.email || '');
   const [date, setDate] = useState(editingItem?.date ? new Date(editingItem.date) : new Date());
   const [time, setTime] = useState(() => {
@@ -38,6 +40,8 @@ export default function DatingFormScreen() {
   const resetForm = () => {
     setPartnerName('');
     setPhoneNumber('');
+    setPartnerRating(0);
+    setPartnerDescription('');
     setEmail('');
     setDate(new Date());
     setTime(new Date());
@@ -112,6 +116,8 @@ export default function DatingFormScreen() {
       birthday: format(birthday, 'yyyy-MM-dd'),
       photo,
       email,
+      description: partnerDescription,
+      rating: partnerRating
     };
     let updatedItems;
     if (editingItem) {
@@ -131,6 +137,17 @@ export default function DatingFormScreen() {
       router.replace('/dating-list');
     }
   };
+
+  const onCheckLimit = (value: string) => {
+    const parsedQty = Number.parseInt(value)
+    if (Number.isNaN(parsedQty)) {
+      setPartnerRating(0)
+    } else if (parsedQty > 5) {
+      setPartnerRating(5)
+    } else {
+      setPartnerRating(parsedQty)
+    }
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -170,6 +187,26 @@ export default function DatingFormScreen() {
           placeholderTextColor="#000"
           value={email}
           onChangeText={setEmail}
+      />
+
+      <TextInput
+          style={styles.input}
+          placeholder="Partner Description"
+          multiline
+          numberOfLines={4}
+          placeholderTextColor="#000"
+          value={partnerDescription}
+          onChangeText={setPartnerDescription}
+      />
+
+      <TextInput
+          style={styles.input}
+          keyboardType={"numeric"}
+          placeholder="Partner Rating"
+          placeholderTextColor="#000"
+          autoComplete={'email'}
+          value={partnerRating.toString()}
+          onChangeText={onCheckLimit}
       />
 
       <TouchableOpacity

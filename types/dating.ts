@@ -1,5 +1,3 @@
-import { ZodiacSign } from './zodiac';
-
 export interface DatingItem {
   id: string;
   partnerName: string;
@@ -7,7 +5,8 @@ export interface DatingItem {
   time: string;
   birthday: string;
   photo?: string;
-  zodiacSign?: ZodiacSign;
+  description?: string;
+  rating?: number;
   phoneNumber?: string;
   email?: string;
 }
@@ -15,6 +14,5 @@ export interface DatingItem {
 export interface UserData {
   name: string;
   birthday?: string;
-  zodiacSign?: ZodiacSign;
   phoneNumber?: string;
 } 

@@ -1,9 +1,8 @@
 import React, {useCallback, useMemo} from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {UserData} from '@/types/dating';
-import {getZodiacSign, zodiacSymbols, compatibilityDescriptions, ZodiacSign} from '@/types/zodiac';
 import {getUserData} from '@/utils/storage';
-import {useFocusEffect, useRouter} from "expo-router";
+import {useFocusEffect} from "expo-router";
 
     const relationship_tips = [
     {
@@ -65,7 +64,6 @@ export default function CompatibilityScreen() {
     React.useEffect(() => {
 
     }, []);
-    const userSign = useMemo(() => getZodiacSign(userData?.birthday ?? ''), [userData]);
 
     if (!userData) {
         return (

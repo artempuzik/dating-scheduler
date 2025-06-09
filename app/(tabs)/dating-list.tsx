@@ -5,7 +5,6 @@ import * as Linking from "expo-linking";
 import {DatingItem} from '@/types/dating';
 import {getDatingItems, saveDatingItems} from '@/utils/storage';
 import {differenceInYears, parseISO} from 'date-fns';
-import {getZodiacSign, zodiacSymbols} from '@/types/zodiac';
 import {Ionicons} from "@expo/vector-icons";
 
 export default function DatingListScreen() {
@@ -71,7 +70,7 @@ export default function DatingListScreen() {
     const renderDatingItem = ({item}: { item: DatingItem }) => {
         const itemDateTime = new Date(`${item.date}T${item.time}`);
         const isPast = itemDateTime < new Date();
-        const zodiacSign = item.zodiacSign || getZodiacSign(item.birthday);
+        const rating = item.rating || 0;
 
         return (
             <View style={styles.itemContainer}>
@@ -83,11 +82,14 @@ export default function DatingListScreen() {
                     <Text>Dating Time: {item.time}</Text>
                     <Text>Birthday: {item.birthday}</Text>
                     <Text>Age: {calculateAge(item.birthday)} years</Text>
-                    <View style={styles.zodiacContainer}>
-                        <Text style={styles.zodiacSymbol}>{zodiacSymbols[zodiacSign]}</Text>
-                        <Text style={styles.zodiacText}>{zodiacSign}</Text>
+                    <View style={styles.rowContainer}>
+                        <Ionicons name="star" size={16} color={rating >= 1 ? '#e65d5d' : '#ccc'}/>
+                        <Ionicons name="star" size={16} color={rating >= 2 ? '#e65d5d' : '#ccc'}/>
+                        <Ionicons name="star" size={16} color={rating >= 3 ? '#e65d5d' : '#ccc'}/>
+                        <Ionicons name="star" size={16} color={rating >= 4 ? '#e65d5d' : '#ccc'}/>
+                        <Ionicons name="star" size={16} color={rating >= 5 ? '#e65d5d' : '#ccc'}/>
                     </View>
-                    <View style={styles.zodiacContainer}>
+                    <View style={styles.rowContainer}>
                         {
                             item.email && (
                                 <TouchableOpacity onPress={() => onTypedEmail(item.email)}>
@@ -96,7 +98,7 @@ export default function DatingListScreen() {
                             )
                         }
                     </View>
-                    <View style={styles.zodiacContainer}>
+                    <View style={styles.rowContainer}>
                         {
                             item.phoneNumber && (
                                 <TouchableOpacity onPress={() => onCallMobilePhone(item.phoneNumber)}>
@@ -105,6 +107,7 @@ export default function DatingListScreen() {
                             )
                         }
                     </View>
+                    <Text style={styles.text}>{item.description}</Text>
                 </View>
                 <View style={styles.actions}>
                     {!isPast && (
@@ -203,21 +206,17 @@ const styles = StyleSheet.create({
     pastItem: {
         opacity: 0.5,
     },
-    zodiacContainer: {
+    rowContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         marginTop: 5,
-    },
-    zodiacSymbol: {
-        fontSize: 20,
-        marginRight: 5,
     },
     phoneNumber: {
         fontSize: 16,
         color: '#007AFF',
         textDecorationLine: 'underline',
     },
-    zodiacText: {
+   text: {
         fontSize: 16,
         color: '#666',
     },

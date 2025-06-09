@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Platform} from 'react-native';
-import { useRouter } from 'expo-router';
 import { saveUserData, getUserData } from '@/utils/storage';
-import { getZodiacSign, zodiacSymbols } from '@/types/zodiac';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { UserData } from '@/types/dating';
 
@@ -13,7 +11,6 @@ export default function ProfileScreen() {
   const [birthday, setBirthday] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     loadUserData();
@@ -36,7 +33,6 @@ export default function ProfileScreen() {
       const updatedData: UserData = {
         name: name.trim(),
         birthday: birthday.toISOString().split('T')[0],
-        zodiacSign: getZodiacSign(birthday.toISOString().split('T')[0]),
         phoneNumber: phoneNumber.trim()
       };
       await saveUserData(updatedData);
@@ -51,8 +47,6 @@ export default function ProfileScreen() {
       setBirthday(selectedDate);
     }
   };
-
-  const zodiacSign = birthday ? getZodiacSign(birthday.toISOString().split('T')[0]) : null;
 
   return (
     <ScrollView style={styles.container}>
@@ -103,13 +97,6 @@ export default function ProfileScreen() {
             </Text>
           )}
         </View>
-
-        {zodiacSign && (
-          <View style={styles.zodiacContainer}>
-            <Text style={styles.zodiacSymbol}>{zodiacSymbols[zodiacSign]}</Text>
-            <Text style={styles.zodiacText}>{zodiacSign}</Text>
-          </View>
-        )}
 
         {showDatePicker && (
             <DateTimePicker
